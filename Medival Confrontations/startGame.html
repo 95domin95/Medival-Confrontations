@@ -1,0 +1,1439 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="utf-8" />
+    <title>Chose your champion and weapons</title>
+    <style>
+    	* { padding: 0; margin: 0; }
+    	canvas { background: white; display: block; margin: 0 auto; }
+		
+		html
+		{
+			background: url(battle/background.jpg);
+			background-repeat: no-repeat;
+		}
+		input[type=text]:focus
+		{
+			webkit-box-shadow: 0px 0px 10px 2px rgba(40, 14, 0, 0.9);
+			-moz-box-shadow: 0px 0px 10px 2px rgba(40, 14, 0, 0.9);
+			box-shadow: 0px 0px 10px 2px rgba(40, 14, 0, 0.9);
+			border: 2px solid #a5cda5;
+			background-color: #a0a0a0;
+			color: #6b3600;
+		}
+		input[type=text], select
+		{
+			background-color: gray;
+			color: #202000;
+			border: 0px;
+			width: 180px;
+			font-size: 20px;
+			border-radius: 5px;
+			box-sizing: border-box;
+			outline: none;
+			border: 2px solid #6b3600;
+		}
+		input[type=text]:focus, select:focus
+		{
+			webkit-box-shadow: 0px 0px 10px 2px rgba(40, 14, 0, 0.9);
+			-moz-box-shadow: 0px 0px 10px 2px rgba(40, 14, 0, 0.9);
+			box-shadow: 0px 0px 10px 2px rgba(40, 14, 0, 0.9);
+			border: 2px solid #a5cda5;
+			background-color: #a0a0a0;
+			color: #6b3600;
+		}		
+		input[type=submit]
+		{
+			font-family: MedievalSharp;
+			width: 200px;
+			height: 50px;
+			font-size:20px;
+			border: 5px outset#6b3600;;
+			background-color: #6b3600;
+			color: gray;
+		}
+		@font-face
+		{
+			font-family: MedievalSharp;
+			src: url(battle/MedievalSharp.ttf);
+		}
+		#battleSurface
+		{
+			background: url(battle/battleSurface.jpg);
+			background-repeat: no-repeat;
+			width: 1000px;
+			height: 0px;
+		}
+		.allChampions
+		{
+			background-color: white;
+			width: 300px;
+			height: 0px;
+			float: left;
+		}
+		.championsInBattleLeft
+		{
+			background-color: white;
+			float: left;
+		}
+		.championsInBattleRight
+		{
+			background-color: white;
+			float: left;
+		}
+		#statisticsInBattle
+		{	
+			font-family: MedievalSharp;
+			color: #6b3600;
+			background-color: white;
+			width: 360px;
+			height: 0px;
+			float: left;
+		}
+		#battleOptions
+		{
+			font-family: 'MedievalSharp', cursive;
+			color: #6b3600;
+			background-color: white;
+			height: 0px;
+			width: 1000px;
+			clear: both;
+		}
+		#battleHints
+		{
+			font-family: 'MedievalSharp', cursive;
+			font-size:20px;
+			color: #6b3600;
+		}
+		#battleHintsContent
+		{
+			font-family: 'MedievalSharp', cursive;
+			font-size:16px;
+			color: #280e00;
+		}
+		#mainContainer
+		{	
+			border-radius:20px;
+			font-family: MedievalSharp;
+			color: #6b3600;
+			width: 1000px;
+			background-color: white;
+			margin-left: auto;
+			margin-right: auto;
+		}
+		#title
+		{
+			position: relative; left: 220px;
+		}
+		#allItems
+		{
+			background-image: url(golas.png);
+			width: 900px;
+			height: 600px;
+			float: left;
+			background-color: black;
+			margin-left: auto;
+			margin-right: auto;
+		}
+		#next
+		{
+			width: 50px;
+			height: 600px;
+			margin-top: auto;
+			margin-left: auto;
+			margin-right: auto;
+			background-color: white;
+			float: left;
+		}
+		#previous
+		{
+			width: 50px;
+			height: 600px;
+			margin-top: auto;
+			margin-left: auto;
+			margin-right: auto;
+			background-color: white;
+			float: left;
+		}
+		#options
+		{
+			width: 1000px;
+			height: 50px;
+			background-color: white;
+			clear: both;
+		}
+		#helmet
+		{
+			position: relative; left: 335px; top: 10px;
+			height: 80px;
+			width: 180px;
+		
+		}
+		#armor
+		{
+			position: relative; left: 397px; top: 130px;
+			height: 160px;
+			width: 50px;
+
+		}
+		#shield
+		{
+			position: relative; left: 230px; top: -20px;
+			height: 150px;
+			width: 150px;
+
+		}
+		#weapon
+		{
+			position: relative; left: 520px; top: -220px;
+			height: 70px;
+			width: 250px;
+
+		}
+		#selectItems
+		{
+			position: relative; top: -460px;
+		}
+		#nextButton
+		{
+			position: relative; top: 260px; left: -150px;
+		}
+		#previousButton
+		{
+			position: relative; top: 260px;
+		}
+		#selectSkills
+		{
+			position: relative; top: -340px;
+		}
+		#statistics
+		{
+			position: relative; left: 650px; top: -640px;
+		}
+		#championInfo
+		{
+			position: relative; left: 650px; top: -1100px;
+		}
+		#nextTeam
+		{
+			position: relative; left: 370px;  top: -18px;
+		}
+    </style>
+	<script src="jquery.js"></script>
+	<script>
+/*
+TODO:
+-uwzględnić itemy w statystykach bitewnych
+-funkcje liczące obrażenia podpiąć pod przycisk atak
+-ilość ruchów zliczać
+-mechanizm nabijania expa
+-funkcje uwzględniające obone podpiąć pod obrone
+-zrobić konsole bitwną
+-grafikę pozmieniać
+-itemy dorobić
+*/
+		var firstOkClick = 0;
+		var nextTeamClicks = 0;
+		var championCounter = 0;
+		var abilities = new Array(8);
+		
+		const availablePointLimit = 50;
+		const NUMBER_OF_CHAMPIONS = 6;
+		const NUMBER_OF_ITEMS = 4;
+		const NUMBER_OF_ABILITIES = 8;
+		
+		//do wysłania do ekranu bitwy
+		var team1Abilities = new Array(NUMBER_OF_CHAMPIONS);
+		var team1Items = new Array(NUMBER_OF_CHAMPIONS);	
+		var team2Abilities = new Array(NUMBER_OF_CHAMPIONS);
+		var team2Items = new Array(NUMBER_OF_CHAMPIONS);
+			
+		var championsItems = new Array(NUMBER_OF_CHAMPIONS);
+		var itemsBonus = new Array(NUMBER_OF_CHAMPIONS);
+		/*
+		1 - attack
+		2 - defense
+		3 - hp
+		4 - resistance
+		5 - armor penetration
+		6 - dodge chance
+		7 - hit chance
+		8 - critical hit chance
+		*/
+		
+		var itemsNumbers =
+		{
+			HELMET: 1,
+			ARMOR: 2,
+			WEAPON: 3,
+			SHIELD: 4
+		}
+		
+		var helmet =
+		{
+			NONE_HELMET: 1,
+			SIMPLE_HELMET: 2
+		}
+		var armor =
+		{
+			NONE_ARMOR: 1,
+			LEATHER_ARMOR: 2,
+			PLATED_ARMOR: 3
+		}
+		var shield =
+		{
+			NONE_SHIELD: 1,
+			SMALL_SHIELD: 2,
+			BIG_SHIELD: 3
+		}
+		var weapon =
+		{
+			FISTS: 1,
+			SHORT_SWORD: 2,
+			AXE: 3,
+			BOW: 4
+		}
+//CALCULATIONS_____________________________________________________________
+		var calculations = 
+		{
+			damage : function(attack, defence, armorPenetration, resistance)
+			{
+				if(attack<1)attack=1; if(armorPenetration<1)armorPenetration=1;
+				if(defence<1)defence=1; if(resistance<1)resistance=1;
+				
+				var tmp = Math.floor((attack/defence)*(armorPenetration/resistance));
+				
+				return tmp < 1 ? 1 : tmp;
+			},
+			percentAbilities : function(ability)
+			{
+				var tmp = 0;
+				for(var i=1; i<=ability; i++)
+				{
+					tmp += (ability/(ability+i));
+				}
+				return Math.floor(tmp) < 1 ? 1 : Math.floor(tmp);
+			},
+			hit : function(dodgeChance, hitChance)
+			{
+				var c = 0;
+				var b = -1;
+				var a = Math.floor((Math.random() * 100) + 1);
+				if(a<=hitChance)
+				{
+					if((a + dodgeChance) > 100) a -= ((a+dodgeChance) - 100);
+					var b = a + dodgeChance;
+					c = Math.floor((Math.random() * 100) + 1);
+				}
+				//alert("c: "+c+" ,b: "+b+", a: "+a+" hitChance: "+hitChance+" ,dodgeChance: "+dodgeChance);
+				return ((c > b)||(c < a))&&b!=-1;
+			},
+			critHit : function(criticalHitChance)
+			{
+				return criticalHitChance <= Math.floor((Math.random() * 100) + 1);
+			}
+		}
+//________________________________________________________________________________
+		//helmets
+		var noneHelmet = "<img src=\"helmet\\noneHelmet.png\"/>";
+		var simpleHelmet = "<img src=\"helmet\\simpleHelmet.png\"/>";
+		
+		//armors
+		var noneArmor = "<img src=\"armor\\noneArmor.png\"/>";
+		var leatherArmor = "<img src=\"armor\\leatherArmor.png\"/>";
+		var platedArmor = "<img src=\"armor\\platedArmor.png\"/>";
+		
+		//shield
+		var noneShield = "<img src=\"shield\\noneShield.png\"/>";
+		var smallShield = "<img src=\"shield\\smallShield.png\"/>";
+		var bigShield = "<img src=\"shield\\bigShield.png\"/>";
+		
+		//weapon
+		var fists = "<img src=\"weapon\\fists.png\"/>";
+		var shortSword = "<img src=\"weapon\\shortSword.png\"/>";
+		var axe = "<img src=\"weapon\\axe.png\"/>";
+		var bow = "<img src=\"weapon\\bow.png\"/>";
+		
+		var overAvailablePointLimit;
+		var unproperValue;
+		var championsAbilities = new Array(NUMBER_OF_CHAMPIONS);
+		var numberOfSelectedChampions = 0;
+		var prevClicked = 0;
+		var abilitiesSet = new Array(false, false, false, false, false, false);
+		
+		var abilityAlias =
+		{
+			ATTACK: 0,
+			DEFENCE: 1,
+			HITPOINTS: 2,
+			RESISTANCE: 3,
+			ARMOR_PENETRATION: 4,
+			DODGE_CHANCE: 5,
+			HIT_CHANCE: 6,
+			CRITICAL_HIT: 7
+		}
+		
+		var abilitiesNames = new Array(NUMBER_OF_ABILITIES);
+		
+		abilitiesNames[abilityAlias.ATTACK] = "Attack";
+		abilitiesNames[abilityAlias.DEFENCE] ="Defence";
+		abilitiesNames[abilityAlias.HITPOINTS] = "Hitpoints";
+		abilitiesNames[abilityAlias.RESISTANCE] = "Resistance";
+		abilitiesNames[abilityAlias.ARMOR_PENETRATION] = "Armor Penetration";
+		abilitiesNames[abilityAlias.DODGE_CHANCE] = "Dodge Chance";
+		abilitiesNames[abilityAlias.HIT_CHANCE] = "Hit chance";
+		abilitiesNames[abilityAlias.CRITICAL_HIT] = "Critical hit chance";	
+		
+		//samowywołujące się funckje anonimowe
+		function createItemsBonus()
+		{
+			for(var i=0; i<NUMBER_OF_CHAMPIONS; i++)
+			{
+				itemsBonus[i] = new Array(NUMBER_OF_ABILITIES);
+			}
+		}
+		function createChampionsAbilities()	
+		{
+			for(var i=0; i<NUMBER_OF_CHAMPIONS; i++)
+			{
+				championsAbilities[i] = new Array(NUMBER_OF_ABILITIES);
+			}
+		}
+		function nextTeamClick()
+		{ 		
+			var team1Set = true;
+			
+			for(var i=0; i<NUMBER_OF_CHAMPIONS; i++)
+			{
+				if(!abilitiesSet[i]) team1Set = false;
+			}
+			
+			if(team1Set&&nextTeamClicks==0)
+			{
+				nextTeamClicks++;
+				
+				for(var i=0; i<NUMBER_OF_CHAMPIONS; i++)
+				{
+					team1Abilities[i] = new Array(NUMBER_OF_ABILITIES);
+				}
+				for(var i=0; i<NUMBER_OF_CHAMPIONS; i++)
+				{
+					team1Items[i] = new Array(NUMBER_OF_ITEMS);
+				}
+				for(var i=0; i<NUMBER_OF_CHAMPIONS; i++)
+				{
+					for(var j=0; j<NUMBER_OF_ABILITIES; j++)
+					{
+						team1Abilities[i][j] = championsAbilities[i][j];
+					}
+				}
+				for(var i=0; i<NUMBER_OF_CHAMPIONS; i++)
+				{
+					for(var j=0; j<NUMBER_OF_ITEMS; j++)
+					{
+						team1Items[i][j] = championsItems[i][j];
+					}
+				}
+				
+				setItemsToNone();
+				setAbilitiesToNone();
+				championCounter = 0;
+				document.getElementById("championInfo").innerHTML = "<h2><b>Champion 1(Team 2)</b></h2></br>";
+				prevClicked = 0;
+				team1Set = false;
+				
+				for(var i=0; i<NUMBER_OF_CHAMPIONS; i++)
+				{
+					abilitiesSet[i] = false;
+				}
+				for(var i=0; i<NUMBER_OF_CHAMPIONS; i++)
+				{
+					for(var j=0; j<NUMBER_OF_ITEMS; j++)
+					{
+						championsItems[i][j] = 1;
+					}
+				}
+				for(var i=0; i<NUMBER_OF_CHAMPIONS; i++)
+				{
+					for(var j=0; j<NUMBER_OF_ABILITIES; j++)
+					{
+						championsAbilities[i][j] = 0;
+						itemsBonus[i][j] = 0;
+					}
+				}
+			}
+			else if((nextTeamClicks==0&&team1Set==false)||(nextTeamClicks==1&&team1Set==false))
+			{
+				alert("You are not selected all champions abilities.");
+			}
+			if(team1Set&&nextTeamClicks==1)
+			{
+				for(var i=0; i<NUMBER_OF_CHAMPIONS; i++)
+				{
+					team2Abilities[i] = new Array(NUMBER_OF_ABILITIES);
+				}
+				for(var i=0; i<NUMBER_OF_CHAMPIONS; i++)
+				{
+					team2Items[i] = new Array(NUMBER_OF_ITEMS);
+				}
+				for(var i=0; i<NUMBER_OF_CHAMPIONS; i++)
+				{
+					for(var j=0; j<NUMBER_OF_ABILITIES; j++)
+					{
+						team2Abilities[i][j] = championsAbilities[i][j];
+					}
+				}
+				for(var i=0; i<NUMBER_OF_CHAMPIONS; i++)
+				{
+					for(var j=0; j<NUMBER_OF_ITEMS; j++)
+					{
+						team2Items[i][j] = championsItems[i][j];
+					}
+				}
+				startBattle();
+			}
+			startBattle();
+		}
+//__________________________________________________________________________________________
+		function startBattle()
+		{	
+			var round = 1;
+			
+			var championClicked =
+			{
+				leftChampionNumber: 0,
+				rightChampionNumber: 0,
+				isRightChampionClicked: false,
+				isLeftChampionClicked: false,
+				attackClicked: false
+			}
+			var isSelceted = new Array(NUMBER_OF_CHAMPIONS);
+			
+			for(var i=0; i<NUMBER_OF_CHAMPIONS; i++)
+			{
+				isSelceted[i] = false;
+			}
+			var messages =
+			{
+				none: "",
+				selectOpponent: "Select opponent to atack, or defend yourself.",
+				attack: "Attack opponent!",
+				selectChampion: "Select one of your champions.",
+				attackNotSelected: "You must select your and your opponent champion",
+				defenseNotSelected: "Select one of your champions.",
+				defenseRightClicked: "Unselect opponent."
+			}
+			
+			document.getElementById("mainContainer").innerHTML = "";
+			$("#battleSurface").height(600).css({'margin-left' : 'auto'}).css({'margin-right' : 'auto'});
+			$(".allChampions").height(480);
+			$(".championsInBattleLeft").height(150).css({'border-width' : '5px 5px 5px 5px'});
+			$(".championsInBattleLeft").width(140).css({'border-style' : 'solid'});
+			$(".championsInBattleRight").height(150).css({'border-width' : '5px 5px 5px 5px'});
+			$(".championsInBattleRight").width(140).css({'border-style' : 'solid'});
+			$("#battleOptions").height(100).css({'border-radius' : '0px 0px 20px 20px'}).css({'background' : 'url(battle/battleOptions.jpg)'});
+			$("#battleOptions").css({'background-repeat' : 'no-repeat'});
+			$("#battleHints").height(50).width(980).css({'clear' : 'both'}).css({'background-color' : '#a0a0a0'});
+			
+			$("#statisticsInBattle").css({padding : '25px'}).height(450).width(350).css({'text-align' : 'center'});
+			$("#statisticsInBattle").css({'background' : 'url(battle/papirus.png)'}).css({'background-repeat' : 'no-repeat'});
+			$("#statisticsTitle").html("<h3><b>Statistics:</b></h3></br>");
+			$("#hpRemainsTitle").html("</br><h3><b>Hitpoints remains:</b></h3></br>");
+			
+			var defButtonDeclare = '<input type="submit" value="Defence" name="battleDefendButton" id="battleDefendButton"/>';
+			var atackButtonDeclare = '<input type="submit" value="Attack" name="battleAtackButton" id="battleAtackButton"/>';
+			var roundNumberDeclare = '<div id="roundNumber"></div>';
+			
+			$("#battleOptions").html(defButtonDeclare + atackButtonDeclare + roundNumberDeclare);
+			$("#roundNumber").css({'font-family' : 'MedievalSharp'}).html("<b>Round "+round+"</b>").width(100).height(30).css({'padding' : '5px'});
+			$("#roundNumber").css({'font-size' : '24px'}).css({position : 'relative'}).css({left : '20px'}).css({top : '0px'});
+			$("#roundNumber").css({'background' : 'url(battle/battleHints.jpg)'}).css({'background-repeat' : 'no-repeat'}).css({'border-radius' : '5px 5px 5px 5px'});
+			$("#battleDefendButton").css({position: 'relative'}).css({left: '280px'}).css({top: '40px'});
+			$("#battleAtackButton").css({position: 'relative'}).css({left: '360px'}).css({top: '40px'});
+			$("#battleHints").css({'padding' : '10px'}).html('<div id="battleHintsTitle"><b>Battle hints:</br></b></div>'+'<div id="battleHintsContent"></div>');
+			$("#battleHints").css({'background' : 'url(battle/battleHints.jpg)'}).css({'background-repeat' : 'no-repeat'});
+			$("#battleHintsContent").html(messages.selectChampion);
+			
+			for(var i=0; i<NUMBER_OF_ABILITIES; i++)
+			{
+				$("#ability" + i).html(abilitiesNames[i] + ": </br>");
+			}
+			
+			var championsImagesLeft = new Array(NUMBER_OF_CHAMPIONS);
+			var championsImagesRight = new Array(NUMBER_OF_CHAMPIONS);
+			
+			for(var i=0; i<NUMBER_OF_CHAMPIONS; i++)
+			{
+				$('#championLeft' + i).html('<canvas id="championImageLeft'+i+'" width="140" height="150"></canvas>');
+				$('#championRight' + i).html('<canvas id="championImageRight'+i+'" width="140" height="150"></canvas>');
+			}
+			
+			var championsLeftCanvas = new Array(NUMBER_OF_CHAMPIONS);
+			var championsRightCanvas = new Array(NUMBER_OF_CHAMPIONS);		
+			
+			for(var i=0; i<NUMBER_OF_CHAMPIONS; i++)
+			{
+				var canvas = document.getElementById('championImageLeft'+i);
+				championsLeftCanvas[i] = canvas.getContext('2d');
+				canvas = document.getElementById('championImageRight'+i);
+				championsRightCanvas[i] = canvas.getContext('2d');
+			}
+			
+		//---------	tylko do celów testowych ---------
+			
+				for(var i=0; i<NUMBER_OF_CHAMPIONS; i++)
+				{
+					team1Abilities[i] = new Array(NUMBER_OF_ABILITIES);
+					team2Abilities[i] = new Array(NUMBER_OF_ABILITIES);
+				}
+				for(var i=0; i<NUMBER_OF_CHAMPIONS; i++)
+				{
+					team1Items[i] = new Array(NUMBER_OF_ITEMS);
+					team2Items[i] = new Array(NUMBER_OF_ITEMS);
+				}
+		//-------
+			for(var i=0; i<6; i++)
+			{
+				for(var j=0; j<8; j++)
+				{
+					team1Abilities[i][j] = Math.floor((Math.random() * 100) + 1);
+					team2Abilities[i][j] = Math.floor((Math.random() * 100) + 1);
+				}
+				for(var j=0; j<4; j++)
+				{
+					team1Items[i][j] = Math.floor((Math.random() * 2) + 1);
+					team2Items[i][j] = Math.floor((Math.random() * 3) + 1);
+				}
+			}
+			
+			var leftHpRemain = new Array(NUMBER_OF_CHAMPIONS);
+			var rightHpRemain = new Array(NUMBER_OF_CHAMPIONS);
+			
+			for(var i=0; i<NUMBER_OF_CHAMPIONS; i++)
+			{
+				leftHpRemain[i] = team1Abilities[i][abilityAlias.HITPOINTS];
+				rightHpRemain[i] = team2Abilities[i][abilityAlias.HITPOINTS];
+			}
+			
+//PODPINANIE FUNKCJI POD ZDARZENIA NAJECHANIA NA HIPKA
+			function mouseOverLeftChampion(championNumber)
+			{
+				for(var j=0; j<NUMBER_OF_ABILITIES; j++)
+				{
+					var text = abilitiesNames[j] + ": ";
+					if(j>4)
+					{
+						text += (calculations.percentAbilities(team1Abilities[championNumber][j]) + "%</br>");					
+					}
+					else
+					{
+						text += (team1Abilities[championNumber][j] + "</br>");
+					}
+					$("#ability" + j).html(text);
+					$("#hpRemains").html("<h3>"+ leftHpRemain[championNumber] +"</h3>");
+				}	
+			}
+			function mouseOverRightChampion(championNumber)
+			{
+				for(var j=0; j<NUMBER_OF_ABILITIES; j++)
+				{
+					var text = abilitiesNames[j] + ": ";
+					if(j>4)
+					{
+						text += (calculations.percentAbilities(team2Abilities[championNumber][j]) + "%</br>");					
+					}
+					else
+					{
+						text += (team1Abilities[championNumber][j] + "</br>");
+					}
+					$("#ability" + j).html(text);
+					$("#hpRemains").html("<h3>"+ rightHpRemain[championNumber] +"</h3>");
+				}	
+			}
+			
+			$('#championLeft0').on('mouseover', function()
+			{	
+				mouseOverLeftChampion(0);
+			})
+			$('#championLeft1').on('mouseover', function()
+			{
+				mouseOverLeftChampion(1);
+			})
+			$('#championLeft2').on('mouseover', function()
+			{
+				mouseOverLeftChampion(2);
+			})
+			$('#championLeft3').on('mouseover', function()
+			{
+				mouseOverLeftChampion(3);
+			})
+			$('#championLeft4').on('mouseover', function()
+			{
+				mouseOverLeftChampion(4);
+			})
+			$('#championLeft5').on('mouseover', function()
+			{
+				mouseOverLeftChampion(5);
+			})
+			
+			
+			$('#championRight0').on('mouseover', function()
+			{
+				mouseOverRightChampion(0);
+			})
+			$('#championRight1').on('mouseover', function()
+			{
+				mouseOverRightChampion(1);
+			})
+			$('#championRight2').on('mouseover', function()
+			{
+				mouseOverRightChampion(2);
+			})
+			$('#championRight3').on('mouseover', function()
+			{
+				mouseOverRightChampion(3);
+			})
+			$('#championRight4').on('mouseover', function()
+			{
+				mouseOverRightChampion(4);
+			})
+			$('#championRight5').on('mouseover', function()
+			{
+				mouseOverRightChampion(5);
+			})
+			function resetAllChampions()
+			{
+				for(var i=0; i<NUMBER_OF_CHAMPIONS; i++)
+				{
+					$('#championLeft'+i).css({'background-color' : 'white'});
+					$('#championRight'+i).css({'background-color' : 'white'});
+					$('#championImageLeft'+i).fadeTo(600, 1);
+					$('#championImageRight'+i).fadeTo(600, 1);
+					isSelceted[i] = false;
+				}
+				championClicked.isLeftChampionClicked = false;
+				championClicked.isRightChampionClicked = false;
+				round++;
+				$("#roundNumber").fadeOut(200);
+				$("#roundNumber").html("<b>Round "+round+"<b>");
+				$("#roundNumber").fadeIn(200);
+			}
+			function resetChampionsBorder()
+			{
+				championClicked.isLeftChampionClicked = false;
+				championClicked.isRightChampionClicked = false;
+				$('#championImageLeft'+championClicked.leftChampionNumber).fadeTo(600, 0.25);
+				$('#championLeft'+championClicked.leftChampionNumber).css({'border-color' : 'black'}).css({'background-color' : 'gray'});
+				isSelceted[championClicked.leftChampionNumber] = true;
+				$('#championRight'+championClicked.rightChampionNumber).fadeOut(200);
+				$('#championRight'+championClicked.rightChampionNumber).css({'border-color' : 'black'});
+				$('#championRight'+championClicked.rightChampionNumber).fadeIn(200);
+				championClicked.leftChampionNumber = 7;
+				championClicked.rightChampionNumber = 7;
+				var allChampionsSelected = true;
+				(function()
+				{
+					isSelceted.forEach(function(el)
+					{
+						if(!el)allChampionsSelected=false;
+					})
+					if(allChampionsSelected) resetAllChampions();
+				})();
+			}
+//____________________________________________________
+//ATAK
+			$('#battleAtackButton').on('click', function()
+			{
+				if(championClicked.isLeftChampionClicked && championClicked.isRightChampionClicked)
+				{
+					(function()
+					{
+						var dodgeChance = calculations.percentAbilities(team2Abilities[championClicked.rightChampionNumber][abilityAlias.DODGE_CHANCE]);
+						var hitChance = calculations.percentAbilities(team1Abilities[championClicked.leftChampionNumber][abilityAlias.HIT_CHANCE]);
+						
+						if(calculations.hit(dodgeChance, hitChance))
+						{
+							var attack = team1Abilities[championClicked.leftChampionNumber][abilityAlias.ATTACK];
+							var armorPenetration = team1Abilities[championClicked.leftChampionNumber][abilityAlias.ARMOR_PENETRATION];
+							var resistance = team2Abilities[championClicked.rightChampionNumber][abilityAlias.RESISTANCE];
+							var defence = team2Abilities[championClicked.rightChampionNumber][abilityAlias.DEFENCE];
+								
+							var dmg = calculations.damage(attack, defence, armorPenetration, resistance);								
+							var critMessage = "";
+							if(calculations.critHit(team1Abilities[championClicked.leftChampionNumber][abilityAlias.CRITICAL_HIT]))
+							{
+								dmg *= 2;
+								critMessage = "Critical hit!";
+							}
+//to trzeba zmienić żeby komp też mógł atakować						
+							if(rightHpRemain[championClicked.rightChampionNumber]>0)
+							{
+								rightHpRemain[championClicked.rightChampionNumber] -= dmg;
+								$('#championImageRight'+championClicked.rightChampionNumber).fadeTo(600, 0.25);
+								$('#championRight'+championClicked.rightChampionNumber).css({'background-color' : 'red'});
+								$('#championImageRight'+championClicked.rightChampionNumber).fadeTo(600, 1);
+								if(rightHpRemain[championClicked.rightChampionNumber]>0)
+								{
+									//$('#championRight'+championClicked.rightChampionNumber).css({'background-color' : 'white'});
+								}
+								else
+								{
+									$('#championImageRight'+championClicked.rightChampionNumber).fadeTo(1, 0.25);
+								}
+							}
+							
+							$("#battleHintsContent").fadeOut(200);
+							$("#battleHintsContent").html(critMessage + "You deal: " + dmg + "dmg");
+							$("#battleHintsContent").fadeIn(200);							
+						}
+						else
+						{
+							$("#battleHintsContent").fadeOut(200);
+							$("#battleHintsContent").html("Miss!");
+							$("#battleHintsContent").fadeIn(200);
+						}
+					})();
+					resetChampionsBorder();
+				}
+				else
+				{
+					$("#battleHintsContent").fadeOut(200);
+					$("#battleHintsContent").html(messages.attackNotSelected);
+					$("#battleHintsContent").fadeIn(200);
+				}
+			})
+//_______________________________________________________
+//OBRONA______________________________________________
+			$('#battleDefendButton').on('click', function()
+			{
+				if(championClicked.isLeftChampionClicked && !championClicked.isRightChampionClicked)
+				{
+					resetChampionsBorder();
+					$("#battleHintsContent").fadeOut(200);
+					$("#battleHintsContent").html(messages.selectChampion);
+					$("#battleHintsContent").fadeIn(200);
+				}
+				else if(!championClicked.isLeftChampionClicked)
+				{
+					$("#battleHintsContent").fadeOut(200);
+					$("#battleHintsContent").html(messages.defenseNotSelected);
+					$("#battleHintsContent").fadeIn(200);
+				}
+				else if(championClicked.isRightChampionClicked)
+				{
+					$("#battleHintsContent").fadeOut(200);
+					$("#battleHintsContent").html(messages.defenseRightClicked);
+					$("#battleHintsContent").fadeIn(200);
+					$('#championRight'+championClicked.rightChampionNumber).fadeOut(200);
+					$('#championRight'+championClicked.rightChampionNumber).css({'border-color' : 'black'});
+					$('#championRight'+championClicked.rightChampionNumber).fadeIn(200);
+					championClicked.isRightChampionClicked = false;
+					championClicked.rightChampionNumber = 7;
+				}
+			})
+//_______________________________________________________
+			function leftChampionClick(championNumber)
+			{
+				if(!championClicked.isLeftChampionClicked && !isSelceted[championNumber])
+				{
+					$('#championLeft'+championNumber).fadeOut(200);
+					$('#championLeft'+championNumber).css({'border-color' : 'green'});
+					$('#championLeft'+championNumber).fadeIn(200);
+					championClicked.leftChampionNumber = championNumber;
+					championClicked.isLeftChampionClicked = true;
+					if(championClicked.isRightChampionClicked)
+					{
+						$("#battleHintsContent").fadeOut(200);
+						$("#battleHintsContent").html(messages.attack);
+						$("#battleHintsContent").fadeIn(200);
+					}
+					else
+					{
+						$("#battleHintsContent").fadeOut(200);
+						$("#battleHintsContent").html(messages.selectOpponent);
+						$("#battleHintsContent").fadeIn(200);
+					}
+				}
+				else if(championClicked.isLeftChampionClicked && championClicked.leftChampionNumber == championNumber)
+				{
+					$('#championLeft'+championNumber).fadeOut(200);
+					$('#championLeft'+championNumber).css({'border-color' : 'black'});
+					$('#championLeft'+championNumber).fadeIn(200);
+					championClicked.isLeftChampionClicked = false;
+					$("#battleHintsContent").fadeOut(200);
+					$("#battleHintsContent").html(messages.selectChampion);
+					$("#battleHintsContent").fadeIn(200);
+				}
+			}
+			function rightChampionClick(championNumber)
+			{
+				if((!championClicked.isRightChampionClicked) && championClicked.isLeftChampionClicked)
+				{
+					$('#championRight'+championNumber).fadeOut(200);
+					$('#championRight'+championNumber).css({'border-color' : 'red'});
+					$('#championRight'+championNumber).fadeIn(200);
+					championClicked.rightChampionNumber = championNumber;
+					championClicked.isRightChampionClicked = true;
+					$("#battleHintsContent").fadeOut(200);
+					$("#battleHintsContent").html(messages.attack);
+					$("#battleHintsContent").fadeIn(200);
+				}
+				else if(championClicked.isRightChampionClicked && championClicked.rightChampionNumber == championNumber)
+				{
+					$('#championRight'+championNumber).fadeOut(200);
+					$('#championRight'+championNumber).css({'border-color' : 'black'});
+					$('#championRight'+championNumber).fadeIn(200);
+					championClicked.isRightChampionClicked = false;
+					$("#battleHintsContent").fadeOut(200);
+					$("#battleHintsContent").html(messages.selectOpponent);
+					$("#battleHintsContent").fadeIn(200);
+				}
+			}
+			$('#championLeft0').on('click', function()
+			{	
+				leftChampionClick(0);
+			})
+			$('#championLeft1').on('click', function()
+			{
+				leftChampionClick(1);
+			})
+			$('#championLeft2').on('click', function()
+			{
+				leftChampionClick(2);
+			})
+			$('#championLeft3').on('click', function()
+			{
+				leftChampionClick(3);
+			})
+			$('#championLeft4').on('click', function()
+			{
+				leftChampionClick(4);
+			})
+			$('#championLeft5').on('click', function()
+			{
+				leftChampionClick(5);
+			})
+			$('#championRight0').on('click', function()
+			{
+				rightChampionClick(0);
+			})
+			$('#championRight1').on('click', function()
+			{
+				rightChampionClick(1);
+			})
+			$('#championRight2').on('click', function()
+			{
+				rightChampionClick(2);
+			})
+			$('#championRight3').on('click', function()
+			{
+				rightChampionClick(3);
+			})
+			$('#championRight4').on('click', function()
+			{
+				rightChampionClick(4);
+			})
+			$('#championRight5').on('click', function()
+			{
+				rightChampionClick(5);
+			})
+			
+			var stickmanLeft = new Image();
+			
+			stickmanLeft.onload = function()
+			{		
+				championsLeftCanvas.forEach(function(el)
+				{
+					el.drawImage(stickmanLeft, 0, 0);
+				})
+			}
+			stickmanLeft.src = 'battle\\golasLewy.png';
+			
+			var stickmanRight = new Image();
+			
+			stickmanRight.onload = function()
+			{
+				championsRightCanvas.forEach(function(el)
+				{
+					el.drawImage(stickmanRight, 0, 0);
+				})
+			}			
+			stickmanRight.src = 'battle\\golasPrawy.png';
+			
+//GŁÓWNY EKRAN BITWY
+		}
+//____________________________________________________________________________________________
+		function prevClick()
+		{
+			if(championCounter>0)
+			{
+				prevClicked++;
+				document.getElementById("championInfo").innerHTML = "<h2><b>Champion " + (championCounter) +  "(Team" + (nextTeamClicks + 1) + ")</b></h2></br>";
+				championCounter--;
+				if(abilitiesSet[championCounter]===true)
+				{
+					setItemsToSelectedByUser();
+					for(var i=0; i<NUMBER_OF_ABILITIES; i++)
+					{
+						var color = "green";
+						var text = "";
+						if(itemsBonus[championCounter][i]<0) color = "red";
+						if(itemsBonus[championCounter][i] != 0)
+						{
+							if(itemsBonus[i]<0)text = "<span style=\"color:" + color + "\"> " + itemsBonus[i] +"</span>";
+							else text = "<span style=\"color:" + color + "\">  +" + itemsBonus[championCounter][i] +"</span>";
+						}					
+						document.getElementById("value" + (i+NUMBER_OF_ABILITIES)).innerHTML = abilitiesNames[i] + ": "+ championsAbilities[championCounter][i] + text;
+						document.getElementById("value" + i).value = championsAbilities[championCounter][i];
+					}
+				}
+				else
+				{
+					setItemsToNone();
+					for(var i=0; i<NUMBER_OF_ABILITIES; i++)
+					{
+						document.getElementById("value" + i).value = "";
+						document.getElementById("value" + (i+NUMBER_OF_ABILITIES)).innerHTML = abilitiesNames[i] + ": ";
+					}					
+				}
+			}		
+		}
+		function setAbilitiesToNone()
+		{
+			for(var i=0; i<NUMBER_OF_ABILITIES; i++)
+			{
+				document.getElementById("value" + i).value = "";
+				document.getElementById("value" + (i+NUMBER_OF_ABILITIES)).innerHTML = abilitiesNames[i] + ": ";
+			}
+		}
+		function setItemsToNone()
+		{
+			$("#typeOfHelmet").val(helmet.NONE_HELMET);
+			$("#typeOfArmor").val(armor.NONE_ARMOR);
+			$("#typeOfWeapon").val(weapon.FISTS);
+			$("#typeOfShield").val(shield.NONE_SHIELD);
+					
+			document.getElementById("weapon").innerHTML = fists;
+			document.getElementById("armor").innerHTML = noneArmor;
+			document.getElementById("helmet").innerHTML = noneHelmet;
+			document.getElementById("shield").innerHTML = noneShield;
+		}
+		function setItemsToSelectedByUser()
+		{
+			$("#typeOfHelmet").val(championsItems[championCounter][itemsNumbers.HELMET]);
+			$("#typeOfArmor").val(championsItems[championCounter][itemsNumbers.ARMOR]);
+			$("#typeOfWeapon").val(championsItems[championCounter][itemsNumbers.WEAPON]);
+			$("#typeOfShield").val(championsItems[championCounter][itemsNumbers.SHIELD]);
+
+			helmetSelect(championCounter);
+			armorSelect(championCounter);
+			shieldSelect(championCounter);
+			weaponSelect(championCounter);
+		}
+		function nextClick()
+		{
+			if(championCounter<5)
+			{
+				championCounter++;
+				document.getElementById("championInfo").innerHTML = "<h2><b>Champion " + (championCounter+1) + "(Team" + (nextTeamClicks + 1) + ")</b></h2></br>";
+				if(prevClicked === 0||abilitiesSet[championCounter]===false)
+				{
+					setItemsToNone();
+					for(var i=0; i<NUMBER_OF_ABILITIES; i++)
+					{
+						document.getElementById("value" + i).value = "";
+						document.getElementById("value" + (i+NUMBER_OF_ABILITIES)).innerHTML = abilitiesNames[i] + ": ";
+					}
+				}
+				else
+				{
+					numberOfSelectedChampions=championCounter;
+					
+					setItemsToSelectedByUser();
+					
+					for(var i=0; i<NUMBER_OF_ABILITIES; i++)
+					{
+						var color = "green";
+						var text = "";
+						if(itemsBonus[championCounter][i]<0) color = "red";
+						if(itemsBonus[championCounter][i] != 0)
+						{
+							if(itemsBonus[i]<0)text = "<span style=\"color:" + color + "\"> " + itemsBonus[i] +"</span>";
+							else text = "<span style=\"color:" + color + "\">  +" + itemsBonus[championCounter][i] +"</span>";
+						}
+						document.getElementById("value" + (i+NUMBER_OF_ABILITIES)).innerHTML = abilitiesNames[i] + ": "+ championsAbilities[championCounter][i] + text;
+						document.getElementById("value" + i).value = championsAbilities[championCounter][i];
+					} 
+					prevClicked--;
+				}
+			}
+		}
+		function checkAvailablePointLimit()
+		{
+			var points = 0;
+			for(var i=0; i<NUMBER_OF_ABILITIES; i++)
+			{
+				points += parseFloat(document.getElementById("value"+i).value);
+			}
+			return points > availablePointLimit;
+		}		
+		function checkValuesCorectness(start, end)
+		{	
+			unproperValue = false;
+			notANumber = false;
+			underPointLimit = false;
+					
+			for(var i=start; i<end; i++)
+			{
+				if(document.getElementById("value"+i).value<0)
+				{
+					unproperValue = true;
+				}
+				else if(!Boolean(parseFloat(document.getElementById("value"+i).value)))
+				{
+					notANumber = true;
+					if(parseFloat(document.getElementById("value"+i).value)===0) notANumber = false;
+				}
+			}
+			return !((checkAvailablePointLimit() || unproperValue) || notANumber);
+		}
+		function helmetSelect(championCounter)
+		{
+			try
+			{
+				if(document.getElementById("typeOfHelmet").value == helmet.NONE_HELMET)
+				{
+					document.getElementById("helmet").innerHTML = noneHelmet;
+					championsItems[championCounter][itemsNumbers.HELMET] = helmet.NONE_HELMET;
+				}
+				else if(document.getElementById("typeOfHelmet").value == helmet.SIMPLE_HELMET)
+				{
+					document.getElementById("helmet").innerHTML = simpleHelmet;
+					championsItems[championCounter][itemsNumbers.HELMET] = helmet.SIMPLE_HELMET;
+					itemsBonus[championCounter][abilityAlias.HITPOINTS] += 10;
+					itemsBonus[championCounter][abilityAlias.RESISTANCE] += 15;
+					itemsBonus[championCounter][abilityAlias.DEFENCE] += 15;
+					itemsBonus[championCounter][abilityAlias.DODGE_CHANCE] -= -5;
+				}
+			}
+			catch(error)
+			{
+				alert(error);
+			}
+		}
+		function armorSelect(championCounter)
+		{
+			try
+			{
+				if(document.getElementById("typeOfArmor").value == armor.NONE_ARMOR)
+				{
+					document.getElementById("armor").innerHTML = noneArmor;
+					championsItems[championCounter][itemsNumbers.ARMOR] = armor.NONE_ARMOR;
+				}
+				else if(document.getElementById("typeOfArmor").value == armor.LEATHER_ARMOR)
+				{
+					document.getElementById("armor").innerHTML = leatherArmor;
+					championsItems[championCounter][itemsNumbers.ARMOR] = armor.LEATHER_ARMOR;
+					itemsBonus[championCounter][abilityAlias.HITPOINTS] += 15;
+					itemsBonus[championCounter][abilityAlias.RESISTANCE] += 20;
+					itemsBonus[championCounter][abilityAlias.DEFENCE] += 15;
+					itemsBonus[championCounter][abilityAlias.DODGE_CHANCE] -= -10;
+				}
+				else if(document.getElementById("typeOfArmor").value == armor.PLATED_ARMOR)
+				{
+					document.getElementById("armor").innerHTML = platedArmor;
+					championsItems[championCounter][itemsNumbers.ARMOR] = armor.PLATED_ARMOR;
+					itemsBonus[championCounter][abilityAlias.HITPOINTS] += 25;
+					itemsBonus[championCounter][abilityAlias.RESISTANCE] += 30;
+					itemsBonus[championCounter][abilityAlias.DEFENCE] += 25;
+					itemsBonus[championCounter][abilityAlias.DODGE_CHANCE] -= -40;
+				}
+			}
+			catch(error)
+			{
+				alert(error);
+			}
+		}
+		function weaponSelect(championCounter)
+		{
+			try
+			{
+				if(document.getElementById("typeOfWeapon").value == weapon.FISTS)
+				{
+					document.getElementById("weapon").innerHTML = fists;
+					championsItems[championCounter][itemsNumbers.WEAPON] = weapon.FISTS;
+				}
+				else if(document.getElementById("typeOfWeapon").value == weapon.SHORT_SWORD)
+				{
+					document.getElementById("weapon").innerHTML = shortSword;
+					championsItems[championCounter][itemsNumbers.WEAPON] = weapon.SHORT_SWORD;
+					itemsBonus[championCounter][abilityAlias.ATTACK] += 10;
+					itemsBonus[championCounter][abilityAlias.CRITICAL_HIT] += 5;
+					itemsBonus[championCounter][abilityAlias.HIT_CHANCE] += 30;
+					itemsBonus[championCounter][abilityAlias.ARMOR_PENETRATION] += 5;
+				}
+				else if(document.getElementById("typeOfWeapon").value == weapon.AXE)
+				{
+					document.getElementById("weapon").innerHTML = axe;
+					championsItems[championCounter][itemsNumbers.WEAPON] = weapon.AXE;
+					itemsBonus[championCounter][abilityAlias.ATTACK] += 30;
+					itemsBonus[championCounter][abilityAlias.CRITICAL_HIT] += 20;
+					itemsBonus[championCounter][abilityAlias.HIT_CHANCE] += 5;
+					itemsBonus[championCounter][abilityAlias.ARMOR_PENETRATION] += 15;				
+				}	
+				else if(document.getElementById("typeOfWeapon").value == weapon.BOW)
+				{
+					document.getElementById("weapon").innerHTML = bow;
+					championsItems[championCounter][itemsNumbers.WEAPON] = weapon.BOW;
+					itemsBonus[championCounter][abilityAlias.ATTACK] += 10;
+					itemsBonus[championCounter][abilityAlias.CRITICAL_HIT] += 5;
+					itemsBonus[championCounter][abilityAlias.HIT_CHANCE] -= 5;
+					itemsBonus[championCounter][abilityAlias.ARMOR_PENETRATION] += 10;
+				}			
+			}
+			catch(error)
+			{
+				alert(error);
+			}
+		}
+		function shieldSelect(championCounter)
+		{
+			try
+			{	
+				$("#shield").fadeOut(100);
+				if(document.getElementById("typeOfShield").value == shield.NONE_SHIELD)
+				{
+					document.getElementById("shield").innerHTML = noneShield;
+					championsItems[championCounter][itemsNumbers.SHIELD] = shield.NONE_SHIELD;
+				}
+				else if(document.getElementById("typeOfShield").value == shield.SMALL_SHIELD)
+				{
+					document.getElementById("shield").innerHTML = smallShield;
+					championsItems[championCounter][itemsNumbers.SHIELD] = shield.SMALL_SHIELD;
+					itemsBonus[championCounter][abilityAlias.HITPOINTS] += 5;
+					itemsBonus[championCounter][abilityAlias.RESISTANCE] += 5;
+					itemsBonus[championCounter][abilityAlias.DEFENCE] += 30;
+					itemsBonus[championCounter][abilityAlias.DODGE_CHANCE] -= -30;
+				}
+				else if(document.getElementById("typeOfShield").value == shield.BIG_SHIELD)
+				{
+					document.getElementById("shield").innerHTML = bigShield;
+					championsItems[championCounter][itemsNumbers.SHIELD] = shield.BIG_SHIELD;
+					itemsBonus[championCounter][abilityAlias.HITPOINTS] += 10;
+					itemsBonus[championCounter][abilityAlias.RESISTANCE] += 10;
+					itemsBonus[championCounter][abilityAlias.DEFENCE] += 50;
+					itemsBonus[championCounter][abilityAlias.DODGE_CHANCE] -= -50;
+				}
+				$("#shield").fadeIn(100);
+			}
+			catch(error)
+			{
+				alert(error);
+			}
+		}
+		function okClick()
+		{
+			if(firstOkClick == 0)
+			{
+				createChampionsAbilities();
+				createItemsBonus();
+				for(var i=0; i<NUMBER_OF_CHAMPIONS; i++)
+				{
+					for(var j=0; j<NUMBER_OF_ABILITIES; j++)
+					{
+						itemsBonus[i][j] = 0;
+					}
+				}
+				for(var i=0; i<NUMBER_OF_CHAMPIONS; i++)
+				{
+					championsItems[i] = new Array(NUMBER_OF_ITEMS);
+				}
+				for(var i=0; i<NUMBER_OF_CHAMPIONS; i++)
+				{
+					for(var j=0; j<NUMBER_OF_ITEMS; j++)
+					{
+						championsItems[i][j] = 1;
+					}
+				}
+			}
+			firstOkClick++;
+			if(checkValuesCorectness(0, NUMBER_OF_ABILITIES))
+			{
+				for(var i=0; i<NUMBER_OF_ABILITIES; i++)
+				{
+					itemsBonus[championCounter][i] = 0;
+				}
+				helmetSelect(championCounter);
+				weaponSelect(championCounter);
+				shieldSelect(championCounter);
+				armorSelect(championCounter);
+				for(var i=0; i<NUMBER_OF_ABILITIES; i++)
+				{
+					championsAbilities[championCounter][i] = parseFloat(document.getElementById("value"+i).value);
+					var color = "green";
+					var text = "";
+					if(itemsBonus[championCounter][i]<0) color = "red";
+					if(itemsBonus[championCounter][i] != 0)
+					{
+						if(itemsBonus[i]<0)text = "<span style=\"color:" + color + "\"> " + itemsBonus[i] +"</span>";
+						else text = "<span style=\"color:" + color + "\">  +" + itemsBonus[championCounter][i] +"</span>";
+					}
+					document.getElementById("value" + (i+NUMBER_OF_ABILITIES)).innerHTML = abilitiesNames[i] + ": "+ championsAbilities[championCounter][i] + text;
+				}
+				abilitiesSet[championCounter] = true;
+			}
+			else
+			{
+				alert("Unproper values or u are over point limit(50pts).");
+			}
+		}
+	</script>
+</head>
+<body>
+	<div id="battleSurface">
+		<div class="allChampions">
+			<div id="championLeft0" class="championsInBattleLeft">
+			<canvas id="championImageLeft0" width="0" height="0"></canvas>
+			</div>
+			<div id="championLeft1" class="championsInBattleLeft">
+			<canvas id="championImageLeft1" width="0" height="0"></canvas>
+			</div>
+			<div id="championLeft2" class="championsInBattleLeft">
+			<canvas id="championImageLeft2" width="0" height="0"></canvas>
+			</div>
+			<div id="championLeft3" class="championsInBattleLeft">
+			<canvas id="championImageLeft3" width="0" height="0"></canvas>
+			</div>
+			<div id="championLeft4" class="championsInBattleLeft">
+			<canvas id="championImageLeft4" width="0" height="0"></canvas>
+			</div>
+			<div id="championLeft5" class="championsInBattleLeft">
+			<canvas id="championImageLeft5" width="0" height="0"></canvas>
+			</div>		
+		</div>
+		<div id="statisticsInBattle">
+			<div id="statisticsTitle"></div>
+			<div id="ability0"></div>
+			<div id="ability1"></div>
+			<div id="ability2"></div>
+			<div id="ability3"></div>
+			<div id="ability4"></div>
+			<div id="ability5"></div>
+			<div id="ability6"></div>
+			<div id="ability7"></div>
+			<div id="hpRemainsTitle"></div>
+			<div id="hpRemains"></div>
+			</br>	
+		</div>
+		<div class="allChampions">
+			<div id="championRight0" class="championsInBattleRight">
+			<canvas id="championImageRight0" width="0" height="0"></canvas>
+			</div>
+			<div id="championRight1" class="championsInBattleRight">
+			<canvas id="championImageRight1" width="0" height="0"></canvas>
+			</div>
+			<div id="championRight2" class="championsInBattleRight">
+			<canvas id="championImageRight2" width="0" height="0"></canvas>
+			</div>
+			<div id="championRight3" class="championsInBattleRight">
+			<canvas id="championImageRight3" width="0" height="0"></canvas>
+			</div>
+			<div id="championRight4" class="championsInBattleRight">
+			<canvas id="championImageRight4" width="0" height="0"></canvas>
+			</div>
+			<div id="championRight5" class="championsInBattleRight">
+			<canvas id="championImageRight5" width="0" height="0"></canvas>
+			</div>
+		</div>
+		<div id="battleHints">
+		</div>
+		<div id="battleOptions">
+		</div>
+	</div>
+	<div id="mainContainer">
+		<div id="title"><h1><b>Medival Confrontations</b></h1></div>
+		<div id="previous">
+			<input type="submit" value="Previous" name="previous" id="previousButton" onclick="prevClick()"/>
+		</div>
+		<div id="allItems">
+			<div id="helmet">
+			</div>
+			<div id="armor">
+			</div>
+			<div id="shield">
+			</div>
+			<div id="weapon">
+			</div>
+			<div id="selectItems">
+				<h3><b>Items:</b></h3></br>
+				Select helmet:</br>
+				<select name="typeOfHelmet" size="1" id="typeOfHelmet">
+					<option value="1">none</option>
+					<option value="2">simple helmet</option>
+				</select>
+				</br>Select armor:</br>
+				<select name="typeOfArmor" size="1" id="typeOfArmor">
+					<option value="1">none</option>
+					<option value="2">leather armor</option>
+					<option value="3">plated armor</option>
+				</select>
+				</br>Select shield:</br>
+				<select name="typeOfShield" size="1" id="typeOfShield">
+					<option value="1">none</option>
+					<option value="2">small shield</option>
+					<option value="3">big shield</option>
+				</select>
+				</br>Select weapon:</br>
+				<select name="typeOfWeapon" size="1" id="typeOfWeapon">
+					<option value="1">fists</option>
+					<option value="2">short sword</option>
+					<option value="3">axe</option>
+					<option value="4">bow</option>
+				</select>				
+			</div>
+			<div id="selectSkills">
+				<h3><b>Skills:</b></h3></br>
+				Attack: 
+				<input type="text" name="attack" id="value0"/></br>
+				Defence:
+				<input type="text" name="defense" id="value1"/></br>
+				Hitpoints:
+				<input type="text" name="hitpoints" id="value2"/></br>
+				Resistance:
+				<input type="text" name="resistance" id="value3"/></br>
+				Armor penetration:
+				<input type="text" name="armorPenetration" id="value4"/></br>
+				Dodge chance:
+				<input type="text" name="dodgeChance" id="value5"/></br>
+				Hit chance:
+				<input type="text" name="hitChance" id="value6"/></br>
+				Critical hit chance:
+				<input type="text" name="criticalHitChance" id="value7"/></br>
+				</br>
+				<input type="submit" id="ok" onclick="okClick()" value="OK"/>
+			</div>
+			<div id="statistics">
+				<h3><b>Statistics:</b></h3></br>
+				<div id="value8">Attack: </br></div>
+				<div id="value9">Defence: </br></div>
+				<div id="value10">Hitpoints: </br></div>
+				<div id="value11">Resistance: </br></div>
+				<div id="value12">Armor Penetration: </br></div>
+				<div id="value13">Dodge Chance: </br></div>
+				<div id="value14">Hit chance: </br></div>
+				<div id="value15">Critical hit chance: </br></div>
+				</br>			
+			</div>
+			<div id="championInfo"><h2><b>Champion 1(Team 1)</b></h2></br></div>
+		</div>
+		<div id="next">
+			<input type="submit" value="Next" name="next" id="nextButton" onclick="nextClick()"/>
+		</div>
+		<div id="options">
+		</div>
+		<div id="nextTeam">
+			<input type="submit" value="Next team" name="nextTeam" id="nextTeam" onclick="nextTeamClick()"/>
+		</div>
+	</div>
+</body>
+</html>
